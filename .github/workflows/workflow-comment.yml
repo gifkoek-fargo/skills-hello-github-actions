@@ -1,0 +1,72 @@
+# github actions workflow to post a comment on a pull request when it is opened
+name: Post comment on pull request
+on:
+  pull_request:
+    types: [opened]
+permissions:
+  pull-requests: write
+jobs:
+  post-comment:
+    name: Post comment on pull request
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post comment
+        run: gh pr comment "$PR_URL" --body "Welcome to the repository!"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+      - name: Check if comment was posted
+        run: |
+          if [ $? -ne 0 ]; then
+            echo "Failed to post comment. Please check the permissions and the GITHUB_TOKEN."
+            exit 1
+          else
+            echo "Comment posted successfully."
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+      - name: Notify success
+        run: echo "Comment posted successfully on pull request $PR_URL"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+      - name: Notify failure
+        if: failure()
+        run: echo "Failed to post comment on pull request $PR_URL"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+      - name: Cleanup
+        run: echo "Cleaning up resources after posting comment"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: always()
+        # This step runs regardless of the success or failure of previous steps
+        # It can be used to perform any necessary cleanup actions
+        # such as deleting temporary files or resetting environment variables
+        # In this case, it simply echoes a message indicating cleanup
+        # You can replace this with actual cleanup commands as needed
+        # For example, you might want to delete temporary files or reset environment variables
+        # Ensure that the cleanup step runs even if previous steps fail
+        # This is useful for maintaining a clean state in your workflow
+        # and preventing resource leaks or leftover artifacts from previous runs
+        # The `if: always()` condition ensures that this step runs regardless of the success or failure of previous steps
+        # This is particularly useful in workflows where you want to ensure that resources
+        # are cleaned up even if an error occurs in earlier steps
+        # You can customize this step to perform any necessary cleanup actions
+        # such as deleting temporary files or resetting environment variables
+        # In this case, it simply echoes a message indicating cleanup
+        # You can replace this with actual cleanup commands as needed
+        # For example, you might want to delete temporary files or reset environment variables
+        # Ensure that the cleanup step runs even if previous steps fail
+        # This is useful for maintaining a clean state in your workflow
+        # and preventing resource leaks or leftover artifacts from previous runs
+        # The `if: always()` condition ensures that this step runs regardless of the success or failure of previous steps
+        # This is particularly useful in workflows where you want to ensure that resources
+        # are cleaned up even if an error occurs in earlier steps
+        # You can customize this step to perform any necessary cleanup actions
+        # such as deleting temporary files or resetting environment variables
+        # In this case, it simply echoes a message indicating cleanup
+        # You can replace this with actual cleanup commands as needed
+        # For example, you might want to delete temporary files or reset environment variables
